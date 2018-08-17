@@ -1,0 +1,34 @@
+- hosts: localhost
+  tasks:
+    - name: Enable Snap Repository
+      zypper_repository:
+        name: snappy
+        repo: 'http://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed/'
+        state: present
+        runrefresh: true
+
+    - name: Install Snap
+      package:
+        name: snapd
+        state: present
+
+    - name: Enable Snapd socket
+      systemd:
+        name: snapd.socket
+        state: enabled
+
+    - name: Enable Snapd apparmor
+      systemd:
+        name: snapd.apparmor
+        state: enabled
+
+    - name: Install Spotify
+      command: snap install spotify
+
+    - name: Install Tmux
+      package:
+        name: tmux
+        state: present
+
+    - name: Install Oh-My-Zsh
+      command: sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
