@@ -1,34 +1,80 @@
 - hosts: localhost
   tasks:
-    - name: Enable Snap Repository
+    - name: Install Google Chrome
+      rpm_key:
+        key: https://dl.google.com/linux/linux_signing_key.pub
+        state: present
+      become: yes
+
+    - zypper:
+        name: https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+        state: present
+      become: yes
+
+    - name: Install Sublime Text
       zypper_repository:
-        name: snappy
-        repo: 'http://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed/'
+        name: sublie-text
+        repo: https://download.sublimetext.com/rpm/stable/x86_64/
+        auto_import_keys: true
+        runrefresh: yes
         state: present
-        runrefresh: true
+      become: yes
 
-    - name: Install Snap
+    - package:
+        name: sublime-text
+        state: present
+      become: yes
+
+    - name: Install Packages
       package:
-        name: snapd
+        name: "{{ item }}"
         state: present
+      loop:
+        - git
+        - zsh
+        - alacritty
+        - tmux
+        - node8
+        - appeditor
+      become: yes
 
-    - name: Enable Snapd socket
-      systemd:
-        name: snapd.socket
-        state: enabled
+    - name: Create Work and luladjiev directories
+      file:
+        path: ~/Work/luladjiev
+        state: directory
+        mode: 0755
 
-    - name: Enable Snapd apparmor
-      systemd:
-        name: snapd.apparmor
-        state: enabled
+    - name: Create Alacritty config folder
+      file:
+        path: ~/.config/alacritty
+        state: directory
+        mode: 0755
 
-    - name: Install Spotify
-      command: snap install spotify
+    - name: Clone dotfiles
+      git:
+        repo: https://github.com/luladjiev/dotfiles.git
+        dest: ~/Work/luladjiev/dotfiles
 
-    - name: Install Tmux
-      package:
-        name: tmux
-        state: present
+    - name: Link configurations
+      file:
+        src: ~/Work/luladjiev/dotfiles/zsh/zshrc
+        dest: /home/peter/.zshrc
+        state: link
 
-    - name: Install Oh-My-Zsh
-      command: sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    - file:
+        src: ~/Work/luladjiev/dotfiles/tmux/tmux.conf
+        dest: ~/.tmux.conf
+        state: link
+
+    - file:
+        src: ~/Work/luladjiev/dotfiles/alacritty/alacritty.yml
+        dest: ~/.config/alacritty/alacritty.yml
+        state: link
+
+    - name: Get lambda-mod.zsh-theme
+      git:
+        repo: https://github.com/halfo/lambda-mod-zsh-theme
+        dest: /tmp/lambda-mod
+    - copy:
+        src: /tmp/lambda-mod/lambda-mod.zsh-theme
+        dest: ~/.oh-my-zsh/themes/lambda-mod.zsh-theme
