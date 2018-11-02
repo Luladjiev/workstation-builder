@@ -1,5 +1,21 @@
 - hosts: localhost
   tasks:
+    - name: Install Packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - zsh
+        - alacritty
+        - tmux
+        - nodejs8
+        - gcc-c++
+        - appeditor
+        - pulseaudio-equalizer
+        - pavucontrol
+      become: yes
+
     - name: Install Google Chrome
       rpm_key:
         key: https://dl.google.com/linux/linux_signing_key.pub
@@ -25,17 +41,15 @@
         state: present
       become: yes
 
-    - name: Install Packages
-      package:
-        name: "{{ item }}"
+    - name: Install Zoom
+      rpm_key:
+        key: https://zoom.us/linux/download/pubkey
         state: present
-      loop:
-        - git
-        - zsh
-        - alacritty
-        - tmux
-        - nodejs8
-        - appeditor
+      become: yes
+
+    - zypper:
+        name: https://zoom.us/client/latest/zoom_openSUSE_x86_64.rpm
+        state: present
       become: yes
 
     - name: Create Work and luladjiev directories
