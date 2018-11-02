@@ -34,7 +34,7 @@
         - zsh
         - alacritty
         - tmux
-        - node8
+        - nodejs8
         - appeditor
       become: yes
 
