@@ -92,3 +92,11 @@
     - copy:
         src: /tmp/lambda-mod/lambda-mod.zsh-theme
         dest: ~/.oh-my-zsh/themes/lambda-mod.zsh-theme
+
+    - name: Install FZF
+      git:
+        repo: https://github.com/junegunn/fzf.git
+        dest: ~/.fzf
+
+    - script: ~/.fzf/install --all
+
