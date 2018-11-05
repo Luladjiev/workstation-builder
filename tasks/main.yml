@@ -77,6 +77,11 @@
         state: link
 
     - file:
+        src: ~/Work/luladjiev/dotfiles/fonts.conf
+        dest: ~/.fonts.conf
+        state: link
+
+    - file:
         src: ~/Work/luladjiev/dotfiles/tmux/tmux.conf
         dest: ~/.tmux.conf
         state: link
