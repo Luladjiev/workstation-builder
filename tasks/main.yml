@@ -106,3 +106,5 @@
 
     - script: ~/.fzf/install --all
 
+    - name: Install rustup
+      shell: curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable
